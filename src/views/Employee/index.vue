@@ -128,7 +128,7 @@ export default {
         // 提示用户删除成功
         this.$message({
           type: 'success',
-          message: '删除成功!'
+          message: '删除成功!!'
         })
       })
     }
