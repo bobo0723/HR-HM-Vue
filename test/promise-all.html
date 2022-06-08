@@ -1,0 +1,39 @@
+<!-- 引入axios 模拟接口调用 -->
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+<!-- 串行和并行 在实际接口中的体现 Promise.all -->
+<script>
+// 可用的接口地址
+ const url1 = 'http://toutiao.itheima.net/v1_0/articles?channel_id=0&timestamp=1654403608978'
+ const url2 = 'http://toutiao.itheima.net/v1_0/articles?channel_id=1&timestamp=1654403608978'
+
+ // 俩个函数的作用 都是为了发送网络请求 并且返回promise对象
+ function getChannel1(){
+   return axios.get(url1)
+ }
+
+ function getChannel2(){
+   return axios.get(url1)
+ }
+
+ // 串行写法 接口1完成之后才会发起接口2  总时长 = 1 + 2  常见于一些接口存在数据依赖的场景 后一个接口依赖前一个接口
+ // 返回的参数
+
+//  async function runner(){
+//    await getChannel1()
+//    await getChannel2()
+//  }
+//  runner()
+
+// 并行写法  Promise.all要求传入多个promise对象组成的数组 然后可以做到多个请求一起发送 并行占用网络资源
+// 多用于期望数据更快的回来  并且多个接口之间没有互相依赖 各自独立
+// 只有所有接口都OK 才有可能获取完整的res 但凡有一个挂了 res就不行了
+function runner(){
+  Promise.all([getChannel1(),getChannel2()]).then(res=>{
+    console.log(res);
+  })
+}
+runner()
+
+
+</script>
