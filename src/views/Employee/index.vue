@@ -11,7 +11,7 @@
         <template #right>
           <el-button type="primary" size="small">导入excel</el-button>
           <el-button type="primary" size="small">导出excel</el-button>
-          <el-button type="primary" size="small">新增员工</el-button>
+          <el-button type="primary" size="small" @click="showDialog">新增员工</el-button>
         </template>
       </page-tools>
       <el-card style="margin-top: 10px;">
@@ -58,14 +58,19 @@
           @current-change="handleCurrentChange"
         />
       </el-card>
+      <add-employee :dialog-visible="dialogVisible" @close-dialog="closeDialog" @fetch-tableList="fetchTableList" />
     </div>
   </div>
 </template>
 <script>
 // import PageTools from '@/components/PageTools/index.vue' - 这里使用的是全局注册的工具组件，就不用使用components定义为私有组件了
+import addEmployee from './components/add-employee.vue'
 import { getEmployeeList, delEmployee } from '@/api/employee.js'
 import dayjs from 'dayjs'
 export default {
+  components: {
+    addEmployee
+  },
   data() {
     return {
       // 员工表格的响应式数据
@@ -74,10 +79,14 @@ export default {
         page: 1, // 当前页
         size: 5 // 每页条数
       },
-      total: null
+      // 总页数
+      total: null,
+      // 弹窗是否显示
+      dialogVisible: false
     }
   },
   created() {
+    // 调用获取员工数据方法
     this.fetchTableList()
   },
   methods: {
@@ -131,6 +140,12 @@ export default {
           message: '删除成功!!'
         })
       })
+    },
+    showDialog() {
+      this.dialogVisible = true
+    },
+    closeDialog() {
+      this.dialogVisible = false
     }
   }
 }

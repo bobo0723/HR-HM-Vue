@@ -6,6 +6,9 @@ import 'element-ui/lib/theme-chalk/index.css'
 
 import '@/styles/index.scss' // global css 当成js模块对待的
 
+// 导入自定义的axios
+import http from '@/utils/http.js'
+
 // 导入根组件
 import App from './App'
 // 导入vuex
@@ -26,6 +29,9 @@ Vue.use(ComponentsIndex)
 
 // 以插件化的注册方式做全局注册 任何一个.vue组件中都可以使用组件
 Vue.use(ElementUI)
+
+// 往Vue原型上挂载方法
+Vue.prototype.$http = http
 
 Vue.config.productionTip = false
 

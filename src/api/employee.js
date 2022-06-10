@@ -35,3 +35,37 @@ export function delEmployee(id) {
     url: `/sys/user/${id}`
   })
 }
+
+/**
+ * @description: 添加员工
+ * @param {*} data
+ * @return {*}
+ */
+export function addEmployee(data) {
+  return request({
+    method: 'post',
+    url: '/sys/user',
+    data
+  })
+}
+
+/**
+ * @description: 从excel中批量导入员工数据
+ * @param {*} data
+    [{
+      mobile: 15751786320
+      timeOfEntry: "2019-03-09T16:00:00.000Z"
+     	username: "测试人员1"
+     	workNumber: 88088,
+     	formOfEmployment: 0,
+     	departmentName: "技术部"
+    }]
+ * @return {*}
+ */
+export function importEmployee(data) {
+  return request({
+    url: '/sys/user/batch',
+    method: 'post',
+    data
+  })
+}

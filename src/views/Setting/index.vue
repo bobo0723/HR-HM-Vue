@@ -10,6 +10,12 @@
             type="primary"
             @click="showRoleDialog"
           >新增角色</el-button>
+          <el-button
+            icon="el-icon-plus"
+            size="small"
+            type="primary"
+            @click="test"
+          >测试$http方法新增角色</el-button>
         </el-row>
         <!-- 表格 -->
         <el-table :data="roleList">
@@ -222,6 +228,18 @@ export default {
       // 回填数据
       this.roleForm = res
       // 去确认按钮触发兜底校验的那里补全操作
+    },
+    // 测试新封装的$http方法新增角色
+    async test() {
+      // 定义要添加的角色
+      const obj = {
+        name: 'vazbb2',
+        description: 'bb'
+      }
+      const res = await this.$http.post('/sys/role', obj)
+      console.log(res)
+      // 刷新列表
+      this.fetchRoleList()
     }
   }
 

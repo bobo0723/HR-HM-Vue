@@ -29,7 +29,6 @@ module.exports = {
     // 当前项目里所有发送的请求接口中 如果请求地址中带的是 '/api' 就会触发代理转发机制
     // 自动转发到target配置的地址上
     // 'http://xxx.com/api/login' -> 'http://ihrm-java.itheima.net/api/login'
-
     proxy: {
       '/api': {
         target: 'http://ihrm-java.itheima.net/', // 真实的接口地址配置到这里来

@@ -34,6 +34,15 @@ export const constantRoutes = [
       component: () => import('@/views/Dashboard/index'),
       meta: { title: '首页', icon: 'dashboard' }
     }]
+  },
+  {
+    path: '/excel',
+    component: Layout,
+    children: [{
+      path: '',
+      name: 'UploadExcel',
+      component: () => import('@/views/UploadExcel/index')
+    }]
   }
 ]
 
