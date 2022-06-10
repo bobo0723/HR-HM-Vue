@@ -11,6 +11,15 @@
 </template>
 
 <script>
+// 组件的作用：把excel文件解析为js数据 它只做这一件事儿
+
+// xlsx:专门的插件 在前端领域里做excel相关的解析问题  核心 当前组件是基于它做的二次封装
+// 所以说到底 excel解析能力是这个插件提供的 这个包已经安装完毕 所以可以直接导入使用
+
+// props:
+// 1. beforeUpload: 类型为函数 作用是在解析文件之前做一些校验 比如大小 文件类型
+// 2. onSuccess: 类型为函数 作用是在解析成功之后自动调用 并且把解析之后的js数据自动传入
+
 import * as XLSX from 'xlsx'
 
 export default {
