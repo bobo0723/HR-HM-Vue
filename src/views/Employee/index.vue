@@ -9,8 +9,8 @@
         </template>
         <!-- 插入到right插槽位置 -->
         <template #right>
-          <el-button type="primary" size="small">导入excel</el-button>
-          <el-button type="primary" size="small">导出excel</el-button>
+          <el-button type="primary" size="small" @click="$router.push('upload-excel')">导入excel</el-button>
+          <el-button type="primary" size="small" @click="handleDownload">导出excel</el-button>
           <el-button type="primary" size="small" @click="showDialog">新增员工</el-button>
         </template>
       </page-tools>
@@ -66,6 +66,7 @@
 // import PageTools from '@/components/PageTools/index.vue' - 这里使用的是全局注册的工具组件，就不用使用components定义为私有组件了
 import addEmployee from './components/add-employee.vue'
 import { getEmployeeList, delEmployee } from '@/api/employee.js'
+import { getExportData } from '@/utils/excel'
 import dayjs from 'dayjs'
 export default {
   components: {
@@ -141,11 +142,40 @@ export default {
         })
       })
     },
+    // 打开对话框
     showDialog() {
       this.dialogVisible = true
     },
+    // 关闭对话框
     closeDialog() {
       this.dialogVisible = false
+    },
+    // 导出excel
+    handleDownload() {
+      import('@/vendor/Export2Excel').then(async(excel) => {
+        // console.log(excel)
+        const res = await getEmployeeList(this.params)
+        // console.log(res.rows)
+        const headerRelation = {
+          '姓名': 'username',
+          '手机号': 'mobile',
+          '入职日期': 'timeOfEntry',
+          '工号': 'workNumber',
+          '聘用形式': 'formOfEmployment',
+          '部门': 'departmentName'
+        }
+        const { data } = await getExportData(res.rows, headerRelation)
+        // console.log(data)
+        // console.log(Object.keys(headerRelation))
+        // debugger
+        excel.export_json_to_excel({
+          header: Object.keys(headerRelation), // 表头 必填
+          data: data, // 具体数据 必填
+          filename: 'excel-list', // 文件名称
+          autoWidth: true, // 宽度是否自适应
+          bookType: 'xlsx' // 生成的文件类型
+        })
+      })
     }
   }
 }

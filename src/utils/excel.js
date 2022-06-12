@@ -1,14 +1,32 @@
+import dayjs from 'dayjs'
 
 /**
  * @description: 获取导出时的表头数据和表格数据
  * @param {*} { sourceData:后端返回的源数据,header:表格头中因为对应关系}
  * @return {*}
  */
-
+function renderFormOfEmployment(value) {
+  const obj = {
+    1: '正式',
+    2: '非正式'
+  }
+  return obj[value]
+}
 export function getExportData(sourceData, headerRelation) {
   const data = sourceData.map(item => {
     const arr = []
-    Object.values(headerRelation).forEach(key => arr.push(item[key]))
+    Object.values(headerRelation).forEach((key) => {
+      // console.log(item[key])
+      if (key === 'formOfEmployment') {
+        // console.log(item[key])
+        arr.push(renderFormOfEmployment(item[key]))
+      } else if (key === 'timeOfEntry') {
+        // console.log(item[key])
+        arr.push(dayjs(item[key]).format('YYYY-MM-DD'))
+      } else {
+        arr.push(item[key])
+      }
+    })
     return arr
   })
   return {

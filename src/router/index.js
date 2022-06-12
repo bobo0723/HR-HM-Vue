@@ -36,7 +36,7 @@ export const constantRoutes = [
     }]
   },
   {
-    path: '/excel',
+    path: '/upload-excel',
     component: Layout,
     children: [{
       path: '',
@@ -44,6 +44,15 @@ export const constantRoutes = [
       component: () => import('@/views/UploadExcel/index')
     }]
   }
+  // {
+  //   path: '/export-excel',
+  //   component: Layout,
+  //   children: [{
+  //     path: '',
+  //     name: 'UploadExcel',
+  //     component: () => import('@/views/UploadExcel/index')
+  //   }]
+  // }
 ]
 
 const createRouter = () => new Router({
