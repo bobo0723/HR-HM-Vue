@@ -1,10 +1,7 @@
 <template>
   <div class="salary-container">
-    <span class="salary-text">工资管理</span>
-    <div style="width:300px;height:300px;">
-      <svg-icon icon-class="lock" />
-      <svg-icon icon-class="edit" />
-    </div>
+    <el-button v-checkButton="'CKGZ'">查看工资</el-button>
+    <el-button v-checkButton="'ZGZ'">涨工资</el-button>
   </div>
 </template>
 <script>

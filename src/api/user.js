@@ -34,7 +34,7 @@ export function getUserInfo() {
 }
 
 /**
- * @description: 获取用户头像
+ * @description: 获取用户所有信息
  * @param {*} id 用户id
  * @return {*}
  */

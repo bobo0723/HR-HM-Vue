@@ -60,3 +60,15 @@ export function updateRole(data) {
     method: 'put'
   })
 }
+
+/**
+ * @description: 获取角色详情
+ * @param {*} data {id:当前角色id}
+ * @return {*}
+ */
+export function getRoleDetailById(id) {
+  return request({
+    url: `/sys/role/${id}`,
+    method: 'GET'
+  })
+}

@@ -1,5 +1,7 @@
 import { login, getUserInfo, getUserDetailById } from '@/api/user'
 import { getToken, removeToken, setToken } from '@/utils/auth'
+import { resetRouter } from '@/router/index'
+
 export default {
   namespaced: true,
   state: {
@@ -22,6 +24,8 @@ export default {
       state.userInfo = {}
       // 清空一下cookie
       removeToken()
+      // 重置路由列表
+      resetRouter()
     }
   },
   // 定义异步方法 ajax api   处理异步
@@ -41,6 +45,8 @@ export default {
       // 2. 提交mutation
       // 如何把俩个对象合并为一个对象？ {...res,...resPhoto}
       ctx.commit('setUserInfo', { ...res, ...resPhoto })
+      // 如果你想在dispatch函数调用完之后拿到res，就需要把res return出去
+      return res
     }
   }
 }

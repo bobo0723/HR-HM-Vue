@@ -16,6 +16,9 @@ import store from './store'
 // 导入router
 import router from './router'
 
+// 执行全局指令注册
+import '@/directive'
+
 // 执行权限文件
 import './permission'
 import '@/icons' // icon

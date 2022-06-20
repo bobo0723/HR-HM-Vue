@@ -1,14 +1,14 @@
+// 动态路由控制
+
 import Layout from '../layout'
-
 export const asyncRoutes = [
-
   // 组织架构
   {
     path: '/department',
     component: Layout,
     children: [{
       path: '',
-      name: 'department',
+      name: 'departments',
       component: () => import('@/views/Department/index'),
       meta: { title: '组织架构', icon: 'tree' }
     }]
@@ -19,7 +19,7 @@ export const asyncRoutes = [
     component: Layout,
     children: [{
       path: '',
-      name: 'setting',
+      name: 'settings',
       component: () => import('@/views/Setting/index'),
       meta: { title: '角色管理', icon: 'setting' }
     }]
@@ -30,24 +30,23 @@ export const asyncRoutes = [
     component: Layout,
     children: [{
       path: '',
-      name: 'employee',
+      name: 'employees',
       component: () => import('@/views/Employee/index'),
       meta: { title: '员工管理', icon: 'people' }
     }]
   },
-
-  // 权限点
+  // 权限点管理
   {
     path: '/permission',
     component: Layout,
     children: [{
       path: '',
-      name: 'permission',
+      name: 'permissions',
       component: () => import('@/views/Permission/index'),
       meta: { title: '权限点管理', icon: 'lock' }
     }]
   },
-
+  // 工资管理
   {
     path: '/salarys',
     component: Layout,

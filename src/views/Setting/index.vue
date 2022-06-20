@@ -24,7 +24,7 @@
           <el-table-column label="描述" prop="description" />
           <el-table-column label="操作" width="240" fixed="right">
             <template #default="{ row }">
-              <el-button size="small">分配权限</el-button>
+              <el-button size="small" @click="openAssignDialog(row.id)">分配权限</el-button>
               <el-button size="small" @click="edit(row.id)">编辑</el-button>
               <el-button size="small" type="danger" @click="fetchDelRole(row.id)">删除</el-button>
             </template>
@@ -67,6 +67,36 @@
         <el-button size="small" type="primary" @click="confirmAdd">确定</el-button>
       </el-row>
     </el-dialog>
+    <!-- 分配权限的弹层 -->
+    <el-dialog
+      title="分配权限(一级为路由页面查看权限-二级为按钮操作权限)"
+      :visible="showAssignDialog"
+      @close="closeAssignDialog"
+    >
+      <!-- 权限点数据展示 -->
+      <template #default>
+        <!-- 使用树形控件展示权限点数据
+        基本展示三个基础属性配置：
+        1. show-checkbox 显示选择框
+        2. default-expand-all 默认展开
+        3. check-strictly  设置true，可以关闭父子关联 -->
+        <el-tree
+          ref="tree"
+          :data="permissionData"
+          :props="{ label: 'name' }"
+          :default-expand-all="true"
+          :show-checkbox="true"
+          :check-strictly="true"
+          node-key="id"
+        />
+      </template>
+      <template #footer>
+        <div style="text-align: right;">
+          <el-button @click="closeAssignDialog">取消</el-button>
+          <el-button type="primary" @click="confirm">确定</el-button>
+        </div>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -100,9 +130,12 @@
   2. 用户修改 调用更新接口 和新增复用大部分的逻辑 只需要加一个判断
       判断条件 是否在当前的roleForm表单对象中有一个id 有id 编辑 更新接口 否则还是之前的新增
 */
-import { getRoleList, deleteRole, addRole, getRoleDetail, updateRole } from '@/api/setting'
+import { getRoleList, deleteRole, addRole, getRoleDetail, updateRole, getRoleDetailById } from '@/api/setting'
+import { getPermissionList, assignPerm } from '@/api/permission'
+import transTree from '@/utils/transTree'
 import { floor } from 'mathjs'
 export default {
+  name: 'SettingIndex',
   // 1.封装接口[理解参数] 2.定义一个响应式数据 3.调用接口获取数据 4.把后端获取回来的值赋值给刚刚定义的响应式数据 5.table绑定数组，其各项绑定prop->数据驱动视图 6.进行调试
   data() {
     return {
@@ -110,7 +143,7 @@ export default {
       roleList: [],
       fetchRoleListParams: {
         page: 1, // 当前页码
-        pagesize: 3 // 每页的条数
+        pagesize: 5 // 每页的条数
       },
       // 总条数
       total: null,
@@ -125,7 +158,14 @@ export default {
       rulesRoleForm: {
         name: [{ required: true, message: '角色名称不能为空', trigger: 'blur' }],
         description: [{ required: true, message: '角色描述不能为空', trigger: 'blur' }]
-      }
+      },
+      /* ------------------------------------------------------------- */
+      // 控制分配权限弹层的显示
+      showAssignDialog: false,
+      // 存储权限数据
+      permissionData: [],
+      // 暂存当前角色id
+      curId: ''
     }
   },
   created() {
@@ -240,6 +280,42 @@ export default {
       console.log(res)
       // 刷新列表
       this.fetchRoleList()
+    },
+    // 分配权限
+    async openAssignDialog(id) {
+      // 打开弹窗
+      this.showAssignDialog = true
+      // 暂存当前角色id用来点击确定
+      this.curId = id
+      // 获取当前角色权限列表
+      const res = await getPermissionList(id)
+      // 存储权限列表数据
+      this.permissionData = transTree(res)
+      // 获取当前角色已分配权限回填数据（回显）
+      // 调用接口
+      const detail = await getRoleDetailById(id)
+      // 回显数据
+      this.$refs.tree.setCheckedKeys(detail.permIds)
+    },
+    // 关闭分配权限弹窗
+    closeAssignDialog() {
+      // 关闭弹窗
+      this.showAssignDialog = false
+      // 清空数据
+      this.curId = ''
+      this.$refs.tree.setCheckedKeys([])
+    },
+    // 确定修改分配权限
+    async confirm() {
+      // 提交修改分配权限请求
+      await assignPerm({
+        id: this.curId,
+        permIds: this.$refs.tree.getCheckedKeys()
+      })
+      // 提示用户
+      this.$message.success('分配权限成功')
+      // 关闭弹窗并清空数据
+      this.closeAssignDialog()
     }
   }
 

@@ -40,7 +40,9 @@ export default {
     // 左侧菜单使用的响应式数据
     routes() {
       // 路由固定的属性 获取的是项目初始化的时候 new Router时传给routes的数组
-      return this.$router.options.routes
+      // return this.$router.options.routes // 不用固定死的了
+      // 这里不用死数据 改为vuex中的动态的响应式数据
+      return this.$store.state.menu.menuList
     },
     activeMenu() {
       const route = this.$route

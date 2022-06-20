@@ -1,13 +1,216 @@
 <template>
   <div class="dashboard-container">
-    this is Dashboard
+    <!-- 头部内容 -->
+    <el-card class="header-card">
+      <div>
+        <div class="fl headL">
+          <div class="headImg">
+            <!-- <img src="@/assets/common/head.jpg"> -->
+            <!-- <img :src="staffPhoto"> -->
+            <img src="@/assets/common/tx.png">
+          </div>
+          <div class="headInfoTip">
+            <p class="firstChild">早安，{{ userName }}，祝你开心每一天！</p>
+            <p class="lastChild">早安，{{ userName }}，祝你开心每一天！</p>
+          </div>
+        </div>
+        <div class="fr" />
+      </div>
+    </el-card>
+    <!-- 主要内容 -->
+    <el-row type="flex" justify="space-between">
+      <!-- 左侧内容 -->
+      <el-col :span="15" style="padding-right: 26px">
+        <!-- 工作日历 -->
+        <el-card class="box-card">
+          <div slot="header" class="header">
+            <span>工作日历</span>
+          </div>
+          <!-- 放置日历组件 -->
+          <el-calendar v-model="value">
+            <template #dateCell="{date}">
+              <span class="date">{{ date.getDate() }}</span>
+              <span v-show="showWeek(date)">
+                <svg-icon
+                  icon-class="star"
+                />
+              </span>
+              <span v-show="showBirthday(date)">🎂</span>
+            </template>
+          </el-calendar>
+        </el-card>
+        <!-- 公告 -->
+        <el-card class="box-card">
+          <div class="advContent">
+            <div class="title">公告</div>
+            <div class="contentItem">
+              <ul class="noticeList">
+                <li>
+                  <div class="item">
+                    <img src="@/assets/common/img.jpeg" alt="">
+                    <div>
+                      <p>
+                        <span class="col">朱继柳</span> 发布了
+                        第1期“传智大讲堂”互动讨论获奖名单公布
+                      </p>
+                      <p>2018-07-21 15:21:38</p>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item">
+                    <img src="@/assets/common/img.jpeg" alt="">
+                    <div>
+                      <p>
+                        <span class="col">朱继柳</span> 发布了
+                        第2期“传智大讲堂”互动讨论获奖名单公布
+                      </p>
+                      <p>2018-07-21 15:21:38</p>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item">
+                    <img src="@/assets/common/img.jpeg" alt="">
+                    <div>
+                      <p>
+                        <span class="col">朱继柳</span> 发布了
+                        第3期“传智大讲堂”互动讨论获奖名单公布
+                      </p>
+                      <p>2018-07-21 15:21:38</p>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </el-card>
+      </el-col>
+      <!-- 右侧内容 -->
+      <el-col :span="9">
+        <el-card class="box-card">
+          <div class="header headTit">
+            <span>流程申请</span>
+          </div>
+          <div class="sideNav">
+            <el-button class="sideBtn">加班离职</el-button>
+            <el-button class="sideBtn">请假调休</el-button>
+            <el-button class="sideBtn">审批列表</el-button>
+            <el-button class="sideBtn">我的信息</el-button>
+          </div>
+        </el-card>
+
+        <!-- 绩效指数 -->
+        <el-card class="box-card">
+          <div slot="header" class="header">
+            <span>绩效指数</span>
+          </div>
+          <!-- 放置雷达图 -->
+          <Radar :indicator="indicatorOne" />
+          <Radar :indicator="indicatorTwo" />
+        </el-card>
+        <!-- 帮助连接 -->
+        <el-card class="box-card">
+          <div class="header headTit">
+            <span>帮助链接</span>
+          </div>
+          <div class="sideLink">
+            <el-row>
+              <el-col :span="8">
+                <a href="#">
+                  <span class="icon iconGuide" />
+                  <p>入门指南</p>
+                </a>
+              </el-col>
+              <el-col :span="8">
+                <a href="#">
+                  <span class="icon iconHelp" />
+                  <p>在线帮助手册</p>
+                </a>
+              </el-col>
+              <el-col :span="8">
+                <a href="#">
+                  <span class="icon iconTechnology" />
+                  <p>联系技术支持</p>
+                </a>
+              </el-col>
+            </el-row>
+          </div>
+        </el-card>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
 <script>
-
+import { mapGetters } from 'vuex'
+import Radar from './components/RadarTwo.vue'
 export default {
-  name: 'Dashboard'
+  name: 'Dashboard',
+  components: {
+    Radar
+  },
+  data() {
+    return {
+      value: new Date(),
+      indicatorOne: [
+        { name: 'Sales', max: 6500 },
+        { name: 'Administration', max: 16000 },
+        { name: 'Information Technology', max: 30000 },
+        { name: 'Customer Support', max: 38000 },
+        { name: 'Development', max: 52000 },
+        { name: 'Marketing', max: 25000 }
+      ],
+      indicatorTwo: [
+        { name: 'A', max: 6500 },
+        { name: 'V', max: 16000 },
+        { name: 'C', max: 30000 },
+        { name: 'R', max: 38000 },
+        { name: 'A', max: 52000 },
+        { name: 'F', max: 25000 }
+      ]
+    }
+  },
+  computed: {
+    ...mapGetters([
+      'userName',
+      'staffPhoto'
+    ])
+  },
+  mounted() {
+    // 定时器里面套定时器，改变Echarts参数，影响视图
+    setTimeout(() => {
+      this.indicatorOne = [
+        { name: 'O', max: 6500 },
+        { name: 'O', max: 16000 },
+        { name: 'O', max: 30000 },
+        { name: 'O', max: 38000 },
+        { name: 'O', max: 52000 },
+        { name: 'O', max: 25000 }
+      ]
+      setTimeout(() => {
+        this.indicatorOne = [
+          { name: 'Sales', max: 6500 },
+          { name: 'Administration', max: 16000 },
+          { name: 'Information Technology', max: 30000 },
+          { name: 'Customer Support', max: 38000 },
+          { name: 'Development', max: 52000 },
+          { name: 'Marketing', max: 25000 }
+        ]
+      }, 3000)
+    }, 3000)
+  },
+  methods: {
+    showWeek(date) {
+      // console.log(date)
+      // const d = date.getDay() === 6 || date.getDay() === 0
+      // console.log(d)
+      return date.getDay() === 6 || date.getDay() === 0
+    },
+    showBirthday(date) {
+      return date.getMonth() + 1 === 6 && date.getDate() === 17
+    }
+  }
 }
 </script>
 
@@ -140,48 +343,4 @@ export default {
     background-position: -460px 0;
   }
 }
-.select-box {
-  display: flex;
-  justify-content: flex-end;
-}
-// 深度选择器  由于scoped属性的关系  当前组件中的style样式只对当前组件生效
-// 如果需要定制三方组件 需要加上::v-deep 才能控制对应的类名样式
-::v-deep .el-calendar-day {
-  height:  auto;
- }
-::v-deep .el-calendar-table__row td::v-deep .el-calendar-table tr td:first-child, ::v-deep .el-calendar-table__row td.prev{
-  border:none;
- }
-.date-content {
-  height: 40px;
-  text-align: center;
-  line-height: 40px;
-  font-size: 14px;
-}
-.date-content .rest {
-  color: #fff;
-  border-radius: 50%;
-  background: rgb(250, 124, 77);
-  width: 20px;
-  height: 20px;
-  line-height: 20px;
-  display: inline-block;
-  font-size: 12px;
-  margin-left: 10px;
-}
-.date-content .text{
-  width: 20px;
-  height: 20px;
-  line-height: 20px;
- display: inline-block;
-
-}
-::v-deep .el-calendar-table td.is-selected .text{
-   background: #409eff;
-   color: #fff;
-   border-radius: 50%;
- }
-::v-deep .el-calendar__header {
-   display: none
- }
 </style>

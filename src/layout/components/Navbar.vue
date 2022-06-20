@@ -76,7 +76,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        // 2.清空数据  vuex管理的
+        // 2.清空Vuex管理的 用户所有数据（token, 用户信息, Cookie, 重置路由）
         this.$store.commit('user/removeUserInfo')
         // 3.跳转到登录
         this.$router.push({

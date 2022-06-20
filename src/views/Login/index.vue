@@ -56,7 +56,7 @@
           效果：当我们输入完密码的时候 回车之后可以不用点击提交按钮也可以正常进行登录
           enter：回车键
           这里必须先在密码输入框中聚焦输入 然后才能enter提交
-         -->
+        -->
         <span class="show-pwd" @click="showPwd">
           <svg-icon
             :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'"
@@ -80,7 +80,7 @@
 
         prevent: 阻止默认行为 表单中 表单域的提交有可能触发整个页面的刷新 加上这个之后
         就阻止了表单的默认提交行为 防止页面整体刷新
-       -->
+      -->
       <div class="tips">
         <span style="margin-right: 20px">账号: 13800000004</span>
         <span> 密码: 123456</span>
@@ -109,7 +109,7 @@ export default {
     return {
       // 表单对象
       loginForm: {
-        mobile: '13800000004',
+        mobile: '13800000001',
         password: '123456'
       },
       // 规则对象[按照实际需求定义规则]

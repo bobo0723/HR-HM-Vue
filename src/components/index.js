@@ -1,7 +1,8 @@
 // 编写ComponentsIndex全局插件 - 这里会将所有的components组件进行全局注册
 
 // 引入PageTools工具组件
-import PageTools from '@/components/PageTools/index.vue'
+import PageTools from './PageTools/index.vue'
+import UploadImg from './Uploading/index.vue'
 
 // 插件优化
 // 为什么要优化？ 因为有可能还有很多的全局组件都需要进行同等的操作 mainjs就会变的比较大 不够精简
@@ -17,6 +18,7 @@ export default {
     // console.dir(Vue)
     // 注册PageTools工具组件
     Vue.component(PageTools.name, PageTools)
+    Vue.component(UploadImg.name, UploadImg)
     // Vue:构造函数
     // Vue.component
     // Vue.prototype.$http = fn

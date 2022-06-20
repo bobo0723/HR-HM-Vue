@@ -42,8 +42,8 @@
           </el-table-column>
           <el-table-column label="操作" fixed="right" width="200">
             <template #default="{ row }">
-              <el-button type="text" size="small">查看</el-button>
-              <el-button type="text" size="small">分配角色</el-button>
+              <el-button type="text" size="small" @click="goDetail(row.id)">查看</el-button>
+              <el-button type="text" size="small" @click="editRole(row.id)">分配角色</el-button>
               <el-button type="text" size="small" @click="remove(row.id)">删除</el-button>
             </template>
           </el-table-column>
@@ -58,17 +58,40 @@
           @current-change="handleCurrentChange"
         />
       </el-card>
+      <!-- 子组件 add-employee -->
       <add-employee :dialog-visible="dialogVisible" @close-dialog="closeDialog" @fetch-tableList="fetchTableList" />
+      <!-- 分配角色弹框 -->
+      <template>
+        <el-dialog class="assign-role" title="分配角色" :visible="showRoleDialog" @close="closeRoleDialog">
+          <!-- 这里准备复选框 -->
+          <template #default>
+            <el-checkbox-group v-model="checkList">
+              <!-- 注意：label决定当前选中的值 - 传给后端的字段 -->
+              <el-checkbox v-for="item in roleList" :key="item.id" :label="item.id">
+                <!-- 多选框 el-checkbox 里有个默认插槽 -->
+                {{ item.name }}
+              </el-checkbox>
+            </el-checkbox-group>
+          </template>
+          <template #footer>
+            <el-button type="primary" size="small" @click="confirm">确定</el-button>
+            <el-button size="small" @click="closeRoleDialog">取消</el-button>
+          </template>
+        </el-dialog>
+      </template>
     </div>
   </div>
 </template>
 <script>
 // import PageTools from '@/components/PageTools/index.vue' - 这里使用的是全局注册的工具组件，就不用使用components定义为私有组件了
 import addEmployee from './components/add-employee.vue'
-import { getEmployeeList, delEmployee } from '@/api/employee.js'
+import { getEmployeeList, delEmployee, assignRoles } from '@/api/employee.js'
 import { getExportData } from '@/utils/excel'
+import { getRoleList } from '@/api/setting'
+import { getUserDetailById } from '@/api/user'
 import dayjs from 'dayjs'
 export default {
+  name: 'EmployeeIndex',
   components: {
     addEmployee
   },
@@ -83,7 +106,15 @@ export default {
       // 总页数
       total: null,
       // 弹窗是否显示
-      dialogVisible: false
+      dialogVisible: false,
+      // 分配角色弹框
+      showRoleDialog: false,
+      // 暂存id提交更改分配权限用
+      curId: '',
+      // 分配角色复选框数据列表
+      checkList: [], // 选中项的lable值
+      // 渲染出来的暂存的获取到的角色列表
+      roleList: []
     }
   },
   created() {
@@ -176,6 +207,51 @@ export default {
           bookType: 'xlsx' // 生成的文件类型
         })
       })
+    },
+    // 跳转员工详情页面
+    goDetail(id) {
+      this.$router.push({
+        path: '/detail',
+        query: {
+          id
+        }
+      })
+    },
+    // 分配角色 - 打开分配角色弹窗
+    async editRole(id) {
+      // 存下id用在确认时提交参数
+      this.curId = id
+      // 打开弹窗
+      this.showRoleDialog = true
+      // 获取全部角色列表接口
+      const res = await getRoleList({
+        page: 1,
+        pagesize: 100
+      })
+      // console.log(res.rows)
+      this.roleList = res.rows
+      // 根据id获取当前员工已分配的角色权限
+      // console.log(id)
+      const res2 = await getUserDetailById(id)
+      // console.log(res2.roleIds)
+      this.checkList = res2.roleIds
+    },
+    // 关闭分配角色对话框
+    closeRoleDialog() {
+      this.curId = ''
+      this.showRoleDialog = false
+    },
+    // 确认分配角色
+    async confirm() {
+      // @param: { id:当前用户id, roleIds:选中的角色id组成的数组 }
+      await assignRoles({
+        id: this.curId,
+        roleIds: this.checkList
+      })
+      // 提示用户
+      this.$message.success('分配角色权限成功')
+      // 关闭弹窗
+      this.closeRoleDialog()
     }
   }
 }
